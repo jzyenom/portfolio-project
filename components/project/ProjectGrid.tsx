@@ -1,17 +1,9 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import { ProjectCard } from "./ProjectCard";
 import { getProjects } from "@/lib/projectApi"; // this is the function we wrote earlier
-
-interface Project {
-  _id: string;
-  title?: string;
-  description?: string;
-  fileUrl: string;
-  label?: string;
-  clientName?: string;
-}
+import type { Project } from "@/types/project";
 
 interface Props {
   activeFilter: string;
@@ -26,13 +18,14 @@ export function ProjectsGrid({ activeFilter }: Props) {
       try {
         const data = await getProjects();
 
-        console.log("✅ Raw Fetched Projects:", data);
+        console.log("âœ… Raw Fetched Projects:", data);
 
         if (Array.isArray(data)) {
           data.forEach((p, index) => {
             console.log(`Project ${index + 1}:`, {
               id: p._id,
-              title: p.title,
+              clientName: p.clientName,
+              projectType: p.projectType,
               label: p.label,
               fileUrl: p.fileUrl,
             });
@@ -41,7 +34,7 @@ export function ProjectsGrid({ activeFilter }: Props) {
 
         setProjects(data);
       } catch (error) {
-        console.error("❌ Failed to fetch projects:", error);
+        console.error("âŒ Failed to fetch projects:", error);
       } finally {
         setLoading(false);
       }
@@ -55,12 +48,12 @@ export function ProjectsGrid({ activeFilter }: Props) {
       ? projects
       : // : projects.filter((p) => p.label === activeFilter);
         projects.filter(
-          (p) => p.label?.toLowerCase() === activeFilter.toLowerCase()
+          (p) => p.label.toLowerCase() === activeFilter.toLowerCase()
         );
 
   if (loading) return <p className="text-white">Loading projects...</p>;
-  console.log("🟠 Active Filter:", activeFilter);
-  console.log("🟢 Filtered Projects:", filteredProjects);
+  console.log("ðŸŸ  Active Filter:", activeFilter);
+  console.log("ðŸŸ¢ Filtered Projects:", filteredProjects);
 
   return (
     <div className="w-full flex justify-center md:justify-start">
@@ -79,9 +72,9 @@ export function ProjectsGrid({ activeFilter }: Props) {
             <ProjectCard
               key={project._id}
               id={project._id}
-              title={project.title || project.clientName}
+              title={project.clientName}
               imageUrl={project.fileUrl || "/default-image.jpg"}
-              description={project.description}
+              description={project.projectType}
             />
           ))
         ) : (
