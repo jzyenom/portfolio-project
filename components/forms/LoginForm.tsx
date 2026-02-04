@@ -146,6 +146,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
       // ✅ Set global auth state using context
       login(response.token, response.user.role);
+      onLogin?.(response.token, response.user.role);
 
       toast.success("Login successful!");
 
@@ -155,9 +156,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       } else {
         router.push("/");
       }
-    } catch (error: any) {
-      setError(error.message || "Login failed");
-      toast.error(error.message || "Login failed");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Login failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

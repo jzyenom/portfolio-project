@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { defaultPortfolioContent } from "@/lib/portfolioData";
 
 const renderServiceIcon = (iconKey: string) => {
@@ -63,10 +64,13 @@ export default function Page() {
         {/* === Left Sidebar === */}
         <aside className="w-full lg:w-1/4 shadow px-6 py-8">
           <div className="flex flex-col items-center space-y-4">
-            <img
+            <Image
               src={sidebar.profileImageUrl}
               className="w-36 h-36 rounded-full shadow"
               alt="Profile"
+              width={144}
+              height={144}
+              sizes="144px"
             />
             <h2 className="text-lg font-medium text-zinc-800">
               {sidebar.displayName}
@@ -162,7 +166,7 @@ export default function Page() {
             style={{ backgroundImage: `url('${hero.backgroundImageUrl}')` }}
           >
             <h1 className="text-4xl sm:text-5xl font-bold text-zinc-800 leading-tight">
-              I'm {hero.name}
+              I&apos;m {hero.name}
             </h1>
             <h2 className="text-4xl sm:text-5xl font-bold leading-tight">
               <span className="text-yellow-500">{hero.rolePrimary}</span>{" "}
@@ -179,10 +183,13 @@ export default function Page() {
             </button>
 
             {/* Hero Image (hidden on small screens) */}
-            <img
+            <Image
               src={hero.heroImageUrl}
               alt="Hero"
+              width={320}
+              height={320}
               className="hidden lg:block absolute right-12 top-12 w-80 h-auto object-cover"
+              sizes="320px"
             />
           </section>
 

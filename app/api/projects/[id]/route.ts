@@ -90,7 +90,6 @@ export async function PATCH(
     if (auth instanceof NextResponse) return auth;
 
     const { id } = await context.params;
-    const url = new URL(req.url);
 
     if (!id) {
       return new Response(JSON.stringify({ message: "Missing project ID" }), {

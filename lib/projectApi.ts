@@ -1,4 +1,8 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import type { Project } from "@/types/project";
+
+type ApiListResponse<T> = { data: T[] };
+type ApiErrorResponse = { message?: string };
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SITE_URL || "",
@@ -11,12 +15,12 @@ const getAuthHeaders = () => {
 };
 
 export async function getProjects() {
-  const res = await api.get<{ data: any[] }>("/api/projects");
+  const res = await api.get<ApiListResponse<Project>>("/api/projects");
   return Array.isArray(res.data?.data) ? res.data.data : [];
 }
 
 export async function getProject(id: string) {
-  const res = await api.get(`/api/projects/${id}`);
+  const res = await api.get<Project>(`/api/projects/${id}`);
   return res.data;
 }
 
@@ -36,8 +40,9 @@ export const addProject = async (formData: FormData) => {
       },
     });
     return response.data;
-  } catch (error: any) {
-    const message = error.response?.data?.message || "Upload failed";
+  } catch (error: unknown) {
+    const err = error as AxiosError<ApiErrorResponse>;
+    const message = err.response?.data?.message || "Upload failed";
     throw new Error(message);
   }
 };
@@ -51,8 +56,9 @@ export const updateProject = async (id: string, formData: FormData) => {
       },
     });
     return response.data;
-  } catch (error: any) {
-    const message = error.response?.data?.message || "Update failed";
+  } catch (error: unknown) {
+    const err = error as AxiosError<ApiErrorResponse>;
+    const message = err.response?.data?.message || "Update failed";
     throw new Error(message);
   }
 };

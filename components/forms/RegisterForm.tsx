@@ -244,8 +244,10 @@ const RegisterForm: React.FC = () => {
       const data = await registerUser(formData);
       toast.success(data.message || "Registered successfully");
       setFormData(initialForm);
-    } catch (error: any) {
-      toast.error(error.message || "Registration failed");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Registration failed";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

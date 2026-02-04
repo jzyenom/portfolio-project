@@ -17,7 +17,14 @@ const Hero: React.FC = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 animate-bounce delay-100">
               <span className="text-gray-800 dark:text-gray-100">
                 {/* <Image src="/logo.svg" alt="Logo" className="h-20 ms-0" width={1000} height={1000} /> */}
-                <img src="/logo.svg" alt="Logo" className="h-20 ms-0"  />
+                <Image
+                  src="/logo.svg"
+                  alt="Logo"
+                  width={80}
+                  height={80}
+                  className="h-20 w-auto ms-0"
+                  priority
+                />
               </span>{" "}
               {/* <span className="theme-text">DESIGNER</span> */}
             </h1>

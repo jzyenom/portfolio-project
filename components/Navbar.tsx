@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { Sun, Moon, Menu, X } from "lucide-react";
@@ -46,7 +47,7 @@ const Navbar = () => {
       {/* ✅ Fluid navbar container */}
       <div className="w-full flex justify-between items-center px-4 sm:px-6 lg:px-10 py-4">
         {/* Logo */}
-        <img src="/logo.svg" alt="Logo" className="h-6" />
+        <Image src="/logo.svg" alt="Logo" width={96} height={24} className="h-6 w-auto" />
 
         {/* Mobile Menu Toggle */}
         <button

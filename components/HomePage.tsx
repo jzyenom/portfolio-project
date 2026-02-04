@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const HomePage = () => (
   <>
     <main className="bg-white text-gray-800 font-sans">
@@ -55,26 +57,32 @@ const HomePage = () => (
         <h2 className="text-2xl font-bold mb-8">My Recent Works</h2>
         <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
           <div className="bg-white shadow-md rounded p-4">
-            <img
+            <Image
               src="https://via.placeholder.com/300x200"
               alt="Work"
-              className="w-full rounded mb-4"
+              width={300}
+              height={200}
+              className="w-full h-auto rounded mb-4"
             />
             <h3 className="font-semibold">UI Design</h3>
           </div>
           <div className="bg-white shadow-md rounded p-4">
-            <img
+            <Image
               src="https://via.placeholder.com/300x200"
               alt="Work"
-              className="w-full rounded mb-4"
+              width={300}
+              height={200}
+              className="w-full h-auto rounded mb-4"
             />
             <h3 className="font-semibold">UX Project</h3>
           </div>
           <div className="bg-white shadow-md rounded p-4">
-            <img
+            <Image
               src="https://via.placeholder.com/300x200"
               alt="Work"
-              className="w-full rounded mb-4"
+              width={300}
+              height={200}
+              className="w-full h-auto rounded mb-4"
             />
             <h3 className="font-semibold">Landing Page</h3>
           </div>

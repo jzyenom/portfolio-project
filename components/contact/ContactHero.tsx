@@ -34,16 +34,13 @@
 
 "use client";
 import Image from "next/image";
-import * as React from "react";
 
 interface ContactButtonProps {
-  children: React.ReactNode;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
 }
 
 export function ContactHero({
-  children,
   onClick,
   type = "button",
 }: ContactButtonProps) {
@@ -51,11 +48,11 @@ export function ContactHero({
     <section className="flex flex-col w-full text-white">
       <div className="flex gap-5 mt-6 justify-center sm:justify-start">
         <div className="w-40">
-          <img
+          <Image
             src="/svgs/request.svg"
             alt="Contact Illustration 1"
-            width="180"
-            height="180"
+            width={180}
+            height={180}
             className="object-contain w-full h-auto mt-10"
           />
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const LeftSideBar = () => {
   const profileInfo = [
@@ -32,10 +33,12 @@ const LeftSideBar = () => {
   return (
     <div>
         <div className="flex flex-col items-center space-y-4">
-          <img
+          <Image
             src="https://placehold.co/150x150"
             className="w-36 h-36 rounded-full shadow"
             alt="Profile"
+            width={150}
+            height={150}
           />
           <h2 className="text-lg font-medium text-zinc-800">Rayan Adlardard</h2>
           <p className="text-neutral-500 text-base">Front-end Developer</p>

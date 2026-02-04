@@ -6,19 +6,21 @@ import { getProject, deleteProject } from "@/lib/projectApi";
 import ProjectDetails from "@/components/project/ProjectDetails";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
+import type { Project } from "@/types/project";
 
 export default function ProjectDetailPage() {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const router = useRouter();
   const { role } = useAuth();
   const isAdmin = role === "admin";
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProject() {
       try {
-        const data = await getProject(id as string);
+        const data = await getProject(id);
         setProject(data);
       } catch (err) {
         console.error(err);
@@ -33,7 +35,7 @@ export default function ProjectDetailPage() {
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this project?")) {
       try {
-        await deleteProject(id as string);
+        await deleteProject(id);
         toast.success("Project deleted");
         router.push("/projects"); // redirect after delete
       } catch (err) {
