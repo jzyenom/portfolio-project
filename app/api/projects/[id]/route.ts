@@ -91,32 +91,31 @@ export async function PATCH(
 
     const { id } = await context.params;
 
-    if (!id) {
-      return new Response(JSON.stringify({ message: "Missing project ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: "Invalid project ID" }, { status: 400 });
     }
 
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
-    const clientName = formData.get("clientName") as string;
-    const projectType = formData.get("projectType") as string;
-    const projectDate = formData.get("projectDate") as string;
-    const label = formData.get("label") as string;
+    const file = formData.get("file");
+    const clientName = formData.get("clientName");
+    const projectType = formData.get("projectType");
+    const projectDate = formData.get("projectDate");
+    const label = formData.get("label");
 
-    if (!clientName || !projectType || !projectDate || !label) {
-      return new Response(JSON.stringify({ message: "Missing fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (
+      typeof clientName !== "string" ||
+      typeof projectType !== "string" ||
+      typeof projectDate !== "string" ||
+      typeof label !== "string"
+    ) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
     await connectToDatabase();
 
     let fileUrl;
 
-    if (file && file.size > 0) {
+    if (file instanceof File && file.size > 0) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
@@ -145,21 +144,15 @@ export async function PATCH(
     );
 
     if (!updated) {
-      return new Response(JSON.stringify({ message: "Project not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return NextResponse.json({ message: "Project not found" }, { status: 404 });
     }
 
-    return new Response(JSON.stringify(updated), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(updated, { status: 200 });
   } catch (error) {
     console.error("Edit error:", error);
-    return new Response(
-      JSON.stringify({ message: "Edit failed", error: String(error) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { message: "Edit failed", error: String(error) },
+      { status: 500 }
     );
   }
 }

@@ -13,17 +13,20 @@ export async function POST(req: Request) {
     if (auth instanceof NextResponse) return auth;
 
     const formData = await req.formData();
-    const file = formData.get("file") as File;
-    const clientName = formData.get("clientName") as string;
-    const projectType = formData.get("projectType") as string;
-    const projectDate = formData.get("projectDate") as string;
-    const label = formData.get("label") as string;
+    const file = formData.get("file");
+    const clientName = formData.get("clientName");
+    const projectType = formData.get("projectType");
+    const projectDate = formData.get("projectDate");
+    const label = formData.get("label");
 
-    if (!file || !clientName || !projectType || !projectDate || !label) {
-      return new Response(JSON.stringify({ message: "Missing fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (
+      !(file instanceof File) ||
+      typeof clientName !== "string" ||
+      typeof projectType !== "string" ||
+      typeof projectDate !== "string" ||
+      typeof label !== "string"
+    ) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -50,15 +53,12 @@ export async function POST(req: Request) {
       label,
     });
 
-    return new Response(JSON.stringify({ fileUrl }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ fileUrl }, { status: 200 });
   } catch (error) {
     console.error("Upload error:", error);
-    return new Response(
-      JSON.stringify({ message: "Upload failed", error: String(error) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { message: "Upload failed", error: String(error) },
+      { status: 500 }
     );
   }
 }
@@ -77,27 +77,9 @@ export async function GET() {
     );
   } catch (error) {
     console.error("Loading projects error:", error);
+    return NextResponse.json(
+      { message: "Failed to load projects" },
+      { status: 500 }
+    );
   }
 }
-
-// app/api/projects/route.ts
-// import connectToDatabase from "@/database/db";
-// import ProjectModel from "@/models/project";
-
-// export async function GET() {
-//   try {
-//     await connectToDatabase();
-//     const projects = await ProjectModel.find().sort({ createdAt: -1 });
-
-//     return new Response(JSON.stringify(projects), {
-//       status: 200,
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   } catch (error) {
-//     console.error("Fetch error:", error);
-//     return new Response(
-//       JSON.stringify({ message: "Failed to fetch projects" }),
-//       { status: 500 }
-//     );
-//   }
-// }
