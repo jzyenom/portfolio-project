@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-motion";
+
+/* === THEME COLORS AND FONTS === */
+@theme {
+  /* Custom colors using oklch or hex */
+  --color-mint-500: oklch(0.72 0.11 178);
+  --color-myred-100: oklch(0.9649 0.0278 25.35);
+  --color-myred-200: oklch(0.9185 0.0506 27.56);
+  --color-myred-300: oklch(0.8724 0.0726 29.37);
+  --color-myred-400: oklch(0.8239 0.0947 30.77);
+  --color-myred-500: oklch(0.7718 0.1155 31.85);
+  --color-myred-600: oklch(0.5984 0.0896 31.13);
+  --color-myred-700: oklch(0.4347 0.0618 29.99);
+  --color-myred-800: oklch(0.2607 0.0346 29.06);
+  /* Fonts */
+  --font-geist-sans: "Sora", sans-serif;
+  --font-geist-mono: "Sora", monospace;
+}
+
+/* === CUSTOM COLOR PALETTE === */
+:root {
+  /* Background and text colors */
+  --background: #fdf9f0;
+  --foreground: #171717;
+
+  /* Primary (myred) color shades */
+  --color-primary-100: #fde5e2;
+  --color-primary-200: #fbcbc5;
+  --color-primary-300: #f8b0a9;
+  --color-primary-400: #f6968c;
+  --color-primary-500: #f47c6f;
+  --color-primary-600: #b75d53;
+  --color-primary-700: #7a3e38;
+  --color-primary-800: #3d1f1c;
+
+  /* Cream (background) */
+  --color-cream-100: #fdf9f0;
+}
+
+/* === TAILWIND INLINE THEME TOKENS === */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* === DARK MODE === */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fdf9f0;
+}
+
+/* === GLOBAL STYLES === */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* === CUSTOM FONTS === */
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Black.ttf") format("truetype");
+  font-weight: 900;
+}
+
+.my-space {
+  --tw-tracking: 0.5em /* 0.025em */;
+  letter-spacing: 0.5em /* 0.025em */;
+}
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}

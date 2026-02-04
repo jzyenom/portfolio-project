@@ -1,0 +1,60 @@
+"use client";
+
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+
+interface AuthContextType {
+  isLoggedIn: boolean;
+  role: string | null;
+  login: (token: string, role: string) => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedRole = localStorage.getItem("role");
+    setIsLoggedIn(!!token);
+    setRole(storedRole);
+  }, []);
+
+  const login = (token: string, userRole: string) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", userRole);
+    setIsLoggedIn(true);
+    setRole(userRole);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    setRole(null);
+    router.push("/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, role, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Hook to use auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};

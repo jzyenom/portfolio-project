@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdf9f0;
+  --foreground: #171717;
+  --color-primary-100: #fde5e2;
+  --color-primary-200: #fbcbc5;
+  --color-primary-300: #f8b0a9;
+  --color-primary-400: #f6968c;
+  --color-primary-500: #f47c6f;
+  --color-primary-600: #b75d53;
+  --color-primary-700: #7a3e38;
+  --color-primary-800: #3d1f1c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fdf9f0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+body {
+  font-family: "Sora", sans-serif;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora/Sora-Black.ttf") format("truetype");
+  font-weight: 900;
+}
+
+/* .bg-cream{
+  color:#FDF9F0;
+  background-color:#FDF9F0;
+}
+
+.theme-text{
+  color:#F47C6F;
+}
+
+.theme-color{
+  background-color:#F47C6F;
+  ::hover{
+    background-color:none
+  }
+} */

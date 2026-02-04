@@ -1,0 +1,187 @@
+// --- models/invoice.ts ---
+import mongoose, { Schema, model, models } from 'mongoose';
+
+const invoiceSchema = new Schema({
+  customerName: String,
+  customerEmail: String,
+  service: String,
+  amount: Number,
+  reference: String,
+  status: {
+    type: String,
+    enum: ['pending', 'success', 'failed'],
+    default: 'pending',
+  },
+  createdAt: { type: Date, default: Date.now },
+});
+
+export const Invoice = models.Invoice || model('Invoice', invoiceSchema);
+
+
+// --- app/api/invoice/route.ts ---
+import { connectDB } from '@/lib/db';
+import { Invoice } from '@/models/invoice';
+import { nanoid } from 'nanoid';
+
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
+
+export async function POST(req: Request) {
+  await connectDB();
+  const { customerName, customerEmail, service, amount } = await req.json();
+
+  const reference = nanoid();
+  const invoice = await Invoice.create({
+    customerName,
+    customerEmail,
+    service,
+    amount,
+    reference,
+  });
+
+  const paystackRes = await fetch('https://api.paystack.co/transaction/initialize', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: customerEmail,
+      amount: amount * 100,
+      reference,
+      callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/verify?ref=${reference}`,
+    }),
+  });
+
+  const data = await paystackRes.json();
+  return new Response(JSON.stringify({ authorization_url: data.data.authorization_url, reference }), { status: 200 });
+}
+
+
+// --- app/api/verify/route.ts ---
+import { connectDB } from '@/lib/db';
+import { Invoice } from '@/models/invoice';
+
+export async function GET(req: Request) {
+  await connectDB();
+  const { searchParams } = new URL(req.url);
+  const reference = searchParams.get('ref');
+  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
+
+  const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+    },
+  });
+
+  const { data } = await verifyRes.json();
+
+  if (data.status === 'success') {
+    await Invoice.findOneAndUpdate({ reference }, { status: 'success' });
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  }
+
+  await Invoice.findOneAndUpdate({ reference }, { status: 'failed' });
+  return new Response(JSON.stringify({ success: false }), { status: 400 });
+}
+
+
+// --- app/services/page.tsx ---
+'use client';
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function ServicesPage() {
+  const [form, setForm] = useState({
+    customerName: '',
+    customerEmail: '',
+    service: '',
+    amount: '',
+  });
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const { data } = await axios.post('/api/invoice', form);
+    window.location.href = data.authorization_url;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-gray-900 p-6 space-y-4 rounded-md max-w-md mx-auto mt-10">
+      <h2 className="text-xl font-bold text-white">Hire Me</h2>
+
+      <input
+        placeholder="Your Name"
+        value={form.customerName}
+        onChange={(e) => setForm({ ...form, customerName: e.target.value })}
+        className="w-full p-2 bg-gray-800 text-white rounded"
+        required
+      />
+      <input
+        placeholder="Your Email"
+        type="email"
+        value={form.customerEmail}
+        onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
+        className="w-full p-2 bg-gray-800 text-white rounded"
+        required
+      />
+      <input
+        placeholder="Service e.g Web Development"
+        value={form.service}
+        onChange={(e) => setForm({ ...form, service: e.target.value })}
+        className="w-full p-2 bg-gray-800 text-white rounded"
+        required
+      />
+      <input
+        placeholder="Amount in Naira"
+        type="number"
+        value={form.amount}
+        onChange={(e) => setForm({ ...form, amount: e.target.value })}
+        className="w-full p-2 bg-gray-800 text-white rounded"
+        required
+      />
+
+      <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+        Get Invoice & Pay
+      </button>
+    </form>
+  );
+}
+
+
+// --- app/verify/page.tsx ---
+'use client';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+export default function VerifyPage() {
+  const searchParams = useSearchParams();
+  const ref = searchParams.get('ref');
+  const [status, setStatus] = useState('Verifying...');
+
+  useEffect(() => {
+    if (ref) {
+      axios.get(`/api/verify?ref=${ref}`).then(res => {
+        setStatus(res.data.success ? 'Payment Verified ✅' : 'Verification Failed ❌');
+      });
+    }
+  }, [ref]);
+
+  return (
+    <div className="text-center mt-20 text-white">
+      <h1 className="text-2xl font-bold">{status}</h1>
+    </div>
+  );
+}
+
+
+<select
+  value={label}
+  onChange={(e) => setLabel(e.target.value)}
+  required
+>
+  <option value="">Select Label</option>
+  <option value="UI">UI</option>
+  <option value="LOGO">LOGO</option>
+  <option value="FLIER">FLIER</option>
+  <option value="Web Design">Web Design</option>
+</select>
